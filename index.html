@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conóceme - Narrativa Digital</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; 
+            font-family: 'Playfair Display', serif;
+            background-image: url('imagen1.png'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #2c2c2c;
+            cursor: default;
+        }
+
+        /* Créditos aumentados de tamaño */
+        #creditos {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 1.4rem; /* Tamaño aumentado */
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+            z-index: 50;
+            pointer-events: none; 
+        }
+
+        #pregunta-inicial {
+            position: absolute;
+            top: 4%;
+            width: 100%;
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+            z-index: 10;
+            transition: opacity 1s ease;
+            font-family: 'Playfair Display', serif;
+        }
+
+        #escenario-interactivo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
+
+        .palabra-interactiva {
+            position: absolute;
+            transition: all 0.4s ease-out; 
+            padding: 10px;
+        }
+
+        .negativa {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.2rem; 
+            text-transform: uppercase;
+            color: #d32f2f; 
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+            cursor: pointer;
+        }
+
+        .positiva {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem; 
+            font-weight: 700;
+            color: #ffffff; 
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+            opacity: 0; 
+            transition: opacity 0.8s ease-in;
+            pointer-events: none; 
+            max-width: 28vw; /* Obliga a la oración a saltar de línea para no invadir los lados */
+            line-height: 1.2; /* Mantiene los saltos de línea unidos y legibles */
+        }
+
+        #contenedor-final {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100%;
+            padding-left: 5%;
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 2s ease;
+            z-index: 20;
+            position: relative;
+        }
+
+        .caja-texto {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 30px 40px;
+            border-radius: 12px;
+            max-width: 550px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            line-height: 1.5;
+            font-size: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        #reiniciar-btn {
+            display: none;
+            position: absolute;
+            bottom: 5%;
+            width: 100%;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #fff;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+            cursor: pointer;
+            z-index: 30;
+            animation: parpadeo 2s infinite;
+            font-family: 'Playfair Display', serif;
+        }
+
+        @keyframes parpadeo {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Créditos actualizados -->
+    <div id="creditos">&copy; Rubria Rocha de Luna 2026</div>
+
+    <!-- Archivo de audio actualizado a sonido.wav -->
+    <audio id="audio-ambiente" loop>
+        <source src="sonido.wav" type="audio/wav">
+    </audio>
+
+    <div id="pregunta-inicial">¿Es esto todo lo que ves?</div>
+    <div id="escenario-interactivo"></div>
+
+    <div id="contenedor-final">
+        <div class="caja-texto">
+            <h1>Conóceme</h1>
+            <p>
+                No soy inmigrante ilegal, soy un ser humano transitando por el mundo,<br>
+                no soy un criminal, sino que huyo de la violencia,<br>
+                no soy narcotraficante, les he estado huyendo en todo mi camino,<br>
+                no vengo a invadir, vengo a sobrevivir,<br>
+                no robo, vengo a ofrecerte mi trabajo,<br>
+                no soy basura, soy humano como tú. 
+            </p>
+            <p>
+                No soy una carga, trabajo honestamente,<br>
+                no soy problemático, lo que menos quiero es causar problemas,<br>
+                no soy peligroso, nunca he tocado un arma,<br>
+                no me veas sospechoso, solo tengo otro color de piel,<br>
+                no soy un desadaptado, también quiero y respeto mi cultura y mi lengua,<br>
+                soy inmigrante, y también quiero a tu país.<br><br>
+                Conóceme.
+            </p>
+        </div>
+    </div>
+
+    <div id="reiniciar-btn">Haz clic en cualquier parte para volver a empezar</div>
+
+    <script>
+        const pares = [
+            { neg: "ILEGAL", pos: "Ejerzo mi derecho a buscar una vida digna." },
+            { neg: "CRIMINAL", pos: "Huyo de la violencia que destruyó mi hogar." },
+            { neg: "INVASOR", pos: "Llego a reconstruir lo que la desigualdad me quitó." },
+            { neg: "LADRÓN", pos: "Mis manos solo conocen el trabajo honesto." },
+            { neg: "CARGA", pos: "Soy el motor que sostiene esta economía." },
+            { neg: "PELIGROSO", pos: "Nunca he tocado un arma." },
+            { neg: "NARCOTRAFICANTE", pos: "He huido de ellos toda mi vida." },
+            { neg: "DESADAPTADO", pos: "Llevo la esperanza de integrarme." },
+            { neg: "FLOJO", pos: "Mi jornada termina cuando el cuerpo no responde." },
+            { neg: "SUCIO", pos: "El polvo es la marca de la tierra que he trabajado." },
+            { neg: "ANALFABETO", pos: "Mi curiosidad por el mundo no conoce fronteras." },
+            { neg: "OPORTUNISTA", pos: "Busco que mi familia no pase hambre." },
+            { neg: "AMENAZA", pos: "Busco un lugar seguro bajo el sol." },
+            { neg: "DESECHABLE", pos: "Mi vida tiene el mismo valor que la tuya." },
+            { neg: "EXTRANJERO", pos: "Compartimos el mismo cielo." }
+        ];
+
+        let transformadas = 0;
+        const escenario = document.getElementById('escenario-interactivo');
+        const contenedorFinal = document.getElementById('contenedor-final');
+        const pregunta = document.getElementById('pregunta-inicial');
+        const reiniciarBtn = document.getElementById('reiniciar-btn');
+        const audioAmbiente = document.getElementById('audio-ambiente');
+
+        audioAmbiente.volume = 0.3;
+        let audioIniciado = false;
+
+        document.addEventListener('click', () => {
+            if (!audioIniciado) {
+                let promesaAudio = audioAmbiente.play();
+                if (promesaAudio !== undefined) {
+                    promesaAudio.then(() => {
+                        audioIniciado = true; 
+                    }).catch(error => {
+                        console.log("Esperando permisos del navegador para el audio...");
+                    });
+                }
+            }
+        });
+
+        function iniciarExperiencia() {
+            escenario.innerHTML = '';
+            transformadas = 0;
+            contenedorFinal.style.opacity = 0;
+            contenedorFinal.style.pointerEvents = 'none';
+            pregunta.style.opacity = 1;
+            reiniciarBtn.style.display = 'none';
+
+            // CREACIÓN DE LA CUADRÍCULA (GRID) PARA EVITAR COLISIONES
+            const posicionesGrid = [];
+            // 5 filas y 3 columnas = 15 espacios exactos
+            for (let fila = 0; fila < 5; fila++) {
+                for (let col = 0; col < 3; col++) {
+                    posicionesGrid.push({ col: col, fila: fila });
+                }
+            }
+            
+            // Barajamos los espacios aleatoriamente
+            posicionesGrid.sort(() => Math.random() - 0.5);
+
+            pares.forEach((par, index) => {
+                const span = document.createElement('span');
+                span.classList.add('palabra-interactiva', 'negativa');
+                span.innerText = par.neg;
+                
+                // Asignamos el espacio seguro basado en la cuadrícula barajada
+                const pos = posicionesGrid[index];
+                
+                // Columnas: ~5%, ~38%, ~71% del ancho
+                const leftPos = pos.col * 33 + 5 + Math.floor(Math.random() * 4); 
+                // Filas: ~12%, ~27%, ~42%, ~57%, ~72% del alto
+                const topPos = pos.fila * 15 + 12 + Math.floor(Math.random() * 4);
+                
+                span.style.left = leftPos + '%';
+                span.style.top = topPos + '%';
+                
+                escenario.appendChild(span);
+
+                span.addEventListener('click', function() {
+                    if (this.dataset.resuelta) return; 
+                    this.dataset.resuelta = "true";
+
+                    // Efecto de evasión rápido
+                    const moveX = (Math.random() > 0.5 ? 60 : -60);
+                    const moveY = (Math.random() > 0.5 ? 60 : -60);
+                    this.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    this.style.opacity = 0; 
+
+                    setTimeout(() => {
+                        this.innerText = par.pos;
+                        this.classList.remove('negativa');
+                        this.classList.add('positiva');
+                        this.style.transform = `translate(0px, 0px)`; // Regresa a su punto seguro en la cuadrícula
+                        this.style.opacity = 1; 
+                        
+                        transformadas++;
+                        verificarFin();
+                    }, 400); 
+                });
+            });
+        }
+
+        function verificarFin() {
+            if (transformadas === pares.length) {
+                setTimeout(() => {
+                    escenario.style.opacity = 0; 
+                    pregunta.style.opacity = 0;  
+                    
+                    setTimeout(() => {
+                        contenedorFinal.style.opacity = 1; 
+                        contenedorFinal.style.pointerEvents = 'auto';
+                        reiniciarBtn.style.display = 'block'; 
+                    }, 1000);
+                }, 2500); 
+            }
+        }
+
+        document.body.addEventListener('click', (e) => {
+            if (e.target.classList.contains('negativa') || e.target.classList.contains('positiva')) return;
+
+            if (transformadas === pares.length && contenedorFinal.style.opacity == 1) {
+                escenario.style.opacity = 1; 
+                iniciarExperiencia();
+            }
+        });
+
+        iniciarExperiencia();
+    </script>
+</body>
+</html>
