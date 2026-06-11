@@ -25,12 +25,11 @@
             cursor: default;
         }
 
-        /* Créditos aumentados de tamaño */
         #creditos {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            font-size: 1.4rem; /* Tamaño aumentado */
+            font-size: 1.4rem; 
             font-weight: 700;
             color: rgba(255, 255, 255, 0.9);
             text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
@@ -45,7 +44,7 @@
             text-align: center;
             font-size: 2.2rem;
             font-weight: 700;
-            color: #fff;
+            color: #FFC107;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
             z-index: 10;
             transition: opacity 1s ease;
@@ -85,8 +84,8 @@
             opacity: 0; 
             transition: opacity 0.8s ease-in;
             pointer-events: none; 
-            max-width: 28vw; /* Obliga a la oración a saltar de línea para no invadir los lados */
-            line-height: 1.2; /* Mantiene los saltos de línea unidos y legibles */
+            max-width: 28vw; 
+            line-height: 1.2; 
         }
 
         #contenedor-final {
@@ -145,16 +144,43 @@
             100% { opacity: 0.5; }
         }
 
+        /* --- MAGIA RESPONSIVA (CELULARES Y TABLETAS PEQUEÑAS) --- */
+        @media (max-width: 768px) {
+            #pregunta-inicial {
+                font-size: 1.5rem; /* Título más pequeño */
+                top: 2%;
+            }
+            .negativa {
+                font-size: 1.2rem; /* Palabras negativas ajustadas */
+                padding: 5px;
+            }
+            .positiva {
+                font-size: 0.95rem; /* Oraciones más legibles en móvil */
+                max-width: 42vw; /* Evita que las frases choquen horizontalmente */
+            }
+            #creditos {
+                font-size: 0.9rem;
+                bottom: 10px;
+                left: 10px;
+            }
+            .caja-texto {
+                padding: 20px;
+                max-width: 85%; /* Se adapta al ancho del celular */
+                font-size: 0.9rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- Créditos actualizados -->
     <div id="creditos">&copy; Rubria Rocha de Luna 2026</div>
 
-    <!-- Archivo de audio actualizado a sonido.wav -->
     <audio id="audio-ambiente" loop>
-        <source src="sonido.wav" type="audio/wav">
+        <source src="sonido.flac" type="audio/mpeg">
     </audio>
 
     <div id="pregunta-inicial">¿Es esto todo lo que ves?</div>
@@ -183,7 +209,7 @@
         </div>
     </div>
 
-    <div id="reiniciar-btn">Haz clic en cualquier parte para volver a empezar</div>
+    <div id="reiniciar-btn">Toca la pantalla para volver a empezar</div>
 
     <script>
         const pares = [
@@ -235,30 +261,40 @@
             pregunta.style.opacity = 1;
             reiniciarBtn.style.display = 'none';
 
-            // CREACIÓN DE LA CUADRÍCULA (GRID) PARA EVITAR COLISIONES
+            // Detectar si estamos en un celular
+            const esMovil = window.innerWidth <= 768;
+            
+            // Si es móvil usamos 2 columnas x 8 filas. Si es PC usamos 3 columnas x 5 filas.
+            const totalColumnas = esMovil ? 2 : 3;
+            const totalFilas = esMovil ? 8 : 5;
+
             const posicionesGrid = [];
-            // 5 filas y 3 columnas = 15 espacios exactos
-            for (let fila = 0; fila < 5; fila++) {
-                for (let col = 0; col < 3; col++) {
-                    posicionesGrid.push({ col: col, fila: fila });
+            for (let f = 0; f < totalFilas; f++) {
+                for (let c = 0; c < totalColumnas; c++) {
+                    // Solo necesitamos 15 espacios, pero generamos la cuadrícula completa
+                    if (posicionesGrid.length < pares.length) {
+                        posicionesGrid.push({ col: c, fila: f });
+                    }
                 }
             }
             
-            // Barajamos los espacios aleatoriamente
+            // Barajamos los espacios
             posicionesGrid.sort(() => Math.random() - 0.5);
+
+            // Ajustes de espaciado dependiendo de la pantalla
+            const anchoColumna = esMovil ? 45 : 33; 
+            const altoFila = esMovil ? 11 : 15;
+            const margenSup = esMovil ? 10 : 12;
 
             pares.forEach((par, index) => {
                 const span = document.createElement('span');
                 span.classList.add('palabra-interactiva', 'negativa');
                 span.innerText = par.neg;
                 
-                // Asignamos el espacio seguro basado en la cuadrícula barajada
                 const pos = posicionesGrid[index];
                 
-                // Columnas: ~5%, ~38%, ~71% del ancho
-                const leftPos = pos.col * 33 + 5 + Math.floor(Math.random() * 4); 
-                // Filas: ~12%, ~27%, ~42%, ~57%, ~72% del alto
-                const topPos = pos.fila * 15 + 12 + Math.floor(Math.random() * 4);
+                const leftPos = pos.col * anchoColumna + 5 + Math.floor(Math.random() * 3); 
+                const topPos = pos.fila * altoFila + margenSup + Math.floor(Math.random() * 3);
                 
                 span.style.left = leftPos + '%';
                 span.style.top = topPos + '%';
@@ -269,9 +305,10 @@
                     if (this.dataset.resuelta) return; 
                     this.dataset.resuelta = "true";
 
-                    // Efecto de evasión rápido
-                    const moveX = (Math.random() > 0.5 ? 60 : -60);
-                    const moveY = (Math.random() > 0.5 ? 60 : -60);
+                    // En celular huyen un poco menos lejos para no salirse de la pantalla
+                    const rangoHuida = esMovil ? 30 : 60;
+                    const moveX = (Math.random() > 0.5 ? rangoHuida : -rangoHuida);
+                    const moveY = (Math.random() > 0.5 ? rangoHuida : -rangoHuida);
                     this.style.transform = `translate(${moveX}px, ${moveY}px)`;
                     this.style.opacity = 0; 
 
@@ -279,7 +316,7 @@
                         this.innerText = par.pos;
                         this.classList.remove('negativa');
                         this.classList.add('positiva');
-                        this.style.transform = `translate(0px, 0px)`; // Regresa a su punto seguro en la cuadrícula
+                        this.style.transform = `translate(0px, 0px)`; 
                         this.style.opacity = 1; 
                         
                         transformadas++;
@@ -309,6 +346,13 @@
 
             if (transformadas === pares.length && contenedorFinal.style.opacity == 1) {
                 escenario.style.opacity = 1; 
+                iniciarExperiencia();
+            }
+        });
+
+        // Vuelve a calcular la cuadrícula si el usuario gira el celular
+        window.addEventListener('resize', () => {
+            if (transformadas < pares.length) {
                 iniciarExperiencia();
             }
         });
