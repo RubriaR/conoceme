@@ -15,5 +15,6 @@ A version of this project was developed as part of the course: *Letras y número
 * **Concept, Code, and Visual Design:** Rubria Rocha de Luna (with Gemini Pro AI Code Assistance)
 * **Technology:** HTML, CSS, JavaScript (Vanilla)
 * **Visual Assets:** AI-generated imagery (Gemini Pro, 2026)
+* **Audio Asset:** ["woodlark windy sand-drifts Loonse en Drunense Duinen Netherlands 1159 am 260319_0087"](https://freesound.org/s/856016/) by klankbeeld (License: Attribution 4.0)
 
 All rights reserved © Rubria Rocha de Luna, 2026.
